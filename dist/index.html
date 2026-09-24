@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#120f2b" />
+<title>Mira · Đêm Linh Quang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+  <script type="module" crossorigin src="./assets/index-CvCq8nSZ.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CZ_Ud6iX.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="scene" tabindex="0" aria-label="Màn chơi 3D: điều khiển Mira bằng bàn phím hoặc nút chạm"></canvas>
+  <div id="overlay-layer" aria-hidden="true"></div>
+  <div id="hurt-vignette" aria-hidden="true"></div>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <section class="card player-card">
+      <div class="portrait" aria-hidden="true">M</div>
+      <div class="bars">
+        <div class="name-row"><strong>MIRA</strong><span id="lvl">Linh lực ×1.00</span></div>
+        <div class="bar hp" role="meter" aria-label="Máu"><i id="hp-fill"></i><b id="hp-text">100 / 100</b></div>
+        <div class="bar en" role="meter" aria-label="Năng lượng tuyệt kỹ"><i id="en-fill"></i><b id="en-text">Tuyệt kỹ 0%</b></div>
+      </div>
+    </section>
+
+    <section class="card wave-card">
+      <div class="wave-top"><span id="wave-label">KHỞI ĐẦU</span><span id="wave-count"></span></div>
+      <div id="wave-name">Tế đàn Linh Quang</div>
+      <div class="wave-progress"><i id="wave-fill"></i></div>
+      <p id="objective">Nhặt Linh Tinh ở tế đàn trung tâm</p>
+    </section>
+
+    <section class="top-right">
+      <div class="card score"><span>ĐIỂM</span><strong id="score">0</strong></div>
+      <button id="btn-sound" class="round" aria-label="Tắt âm thanh">♪</button>
+      <button id="btn-pause" class="round" aria-label="Tạm dừng">Ⅱ</button>
+    </section>
+
+    <div id="boss-bar" class="hidden"><span>HẮC NGUYỆT THÚ</span><div class="bar"><i id="boss-fill"></i></div></div>
+
+    <div id="toast"></div>
+  </div>
+
+  <div id="banner" aria-live="polite"><small id="banner-sub"></small><h2 id="banner-title"></h2></div>
+
+  <!-- Controls -->
+  <div id="stick-zone" class="touch-only"><div id="stick"><div id="knob"></div></div><span class="stick-hint">Kéo để di chuyển</span></div>
+  <nav id="skills" class="hidden" aria-label="Chiêu thức">
+    <button class="skill" data-skill="ult" aria-label="Mưa Sao Băng">
+      <svg viewBox="0 0 24 24"><path d="M20 3 11 12M17 3l-5 5M20 7l-5 5"/><circle cx="7" cy="17" r="3.4"/></svg>
+      <i class="cd"></i><kbd>U</kbd><em>Mưa Sao Băng</em>
+    </button>
+    <button class="skill" data-skill="nova" aria-label="Vòng Tinh Tú">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8" stroke-dasharray="3 2.3"/></svg>
+      <i class="cd"></i><kbd>L</kbd><em>Vòng Tinh Tú</em>
+    </button>
+    <button class="skill" data-skill="bolt" aria-label="Tia Linh Quang">
+      <svg viewBox="0 0 24 24"><path d="M3 12h10M9 7l5 5-5 5"/><path d="M16 8l2 4-2 4 5-4z" fill="currentColor"/></svg>
+      <i class="cd"></i><kbd>K</kbd><em>Tia Linh Quang</em>
+    </button>
+    <button class="skill" data-skill="dash" aria-label="Lướt Gió">
+      <svg viewBox="0 0 24 24"><path d="M3 8h9M2 12h13M3 16h9"/><path d="M15 6l6 6-6 6"/></svg>
+      <i class="cd"></i><kbd>␣</kbd><em>Lướt Gió</em>
+    </button>
+    <button class="skill main" data-skill="slash" aria-label="Chém Nguyệt Quang">
+      <svg viewBox="0 0 24 24"><path d="M4 18C9 17 16 12 19 4c1 6-3 13-12 15z" fill="currentColor" stroke="none"/></svg>
+      <i class="cd"></i><kbd>J</kbd><em>Chém Nguyệt Quang</em>
+    </button>
+  </nav>
+  <div id="key-hint" class="desktop-only hidden"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> di chuyển · chuột trái = chém · <kbd>Esc</kbd> tạm dừng</div>
+
+  <!-- Screens -->
+  <div id="screen-title" class="screen">
+    <div class="panel">
+      <span class="eyebrow">MỘT ĐÊM TRĂNG TRÊN ĐẢO BAY</span>
+      <h1>Mira <em>Đêm Linh Quang</em></h1>
+      <p class="lede">Cổng hư không mở ra khi trăng lên. Nhặt <b>Linh Tinh</b> trên tế đàn để đánh thức sức mạnh, đẩy lùi năm đợt yêu quái và hạ <b>Hắc Nguyệt Thú</b>.</p>
+      <div class="howto">
+        <div><h3>Di chuyển</h3><p class="desktop-only"><kbd>W A S D</kbd> hoặc phím mũi tên</p><p class="touch-only">Kéo ở nửa trái màn hình</p></div>
+        <div><h3>Chiêu thức</h3><p class="desktop-only"><kbd>J</kbd> Chém · <kbd>K</kbd> Tia sáng · <kbd>L</kbd> Vòng sao · <kbd>Space</kbd> Lướt · <kbd>U</kbd> Tuyệt kỹ</p><p class="touch-only">Cụm nút bên phải: Chém (nút lớn), Tia sáng, Vòng sao, Lướt và Tuyệt kỹ khi thanh vàng đầy</p></div>
+      </div>
+      <div id="load-wrap"><div class="load-bar"><i id="load-fill"></i></div><span id="load-text">Đang tải Mira…</span></div>
+      <button id="btn-start" class="primary" disabled>Bắt đầu <span>→</span></button>
+      <p id="best" class="best"></p>
+    </div>
+  </div>
+
+  <div id="screen-pause" class="screen hidden">
+    <div class="panel small"><span class="eyebrow">TẠM DỪNG</span><h2>Hòn đảo vẫn chờ bạn.</h2><button id="btn-resume" class="primary">Tiếp tục <span>→</span></button><button id="btn-quit" class="ghost">Về màn hình chính</button></div>
+  </div>
+
+  <div id="screen-end" class="screen hidden">
+    <div class="panel small">
+      <span class="eyebrow" id="end-eyebrow">KẾT THÚC</span>
+      <h2 id="end-title">Mira đã gục ngã</h2>
+      <div class="stats"><div><span>Điểm</span><strong id="end-score">0</strong></div><div><span>Hạ gục</span><strong id="end-kills">0</strong></div><div><span>Đợt</span><strong id="end-wave">1</strong></div><div><span>Thời gian</span><strong id="end-time">0:00</strong></div></div>
+      <p id="end-best" class="best"></p>
+      <button id="btn-again" class="primary">Chơi lại <span>↻</span></button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
