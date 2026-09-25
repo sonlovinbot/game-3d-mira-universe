@@ -83,14 +83,36 @@
         <div><h3>Chiêu thức</h3><p class="desktop-only"><kbd>J</kbd> Chém · <kbd>K</kbd> Tia sáng · <kbd>L</kbd> Vòng sao · <kbd>Space</kbd> Lướt · <kbd>U</kbd> Tuyệt kỹ</p><p class="touch-only">Cụm nút bên phải: Chém (nút lớn), Tia sáng, Vòng sao, Lướt và Tuyệt kỹ khi thanh vàng đầy</p></div>
       </div>
       <div id="load-wrap"><div class="load-bar"><i id="load-fill"></i></div><span id="load-text">Đang tải Mira…</span></div>
-      <button id="btn-start" class="primary" disabled>Bắt đầu <span>→</span></button>
+      <div class="title-actions">
+        <button id="btn-start" class="primary" disabled>Bắt đầu <span>→</span></button>
+        <button id="btn-studio" class="secondary" disabled>Xem chuyển động</button>
+      </div>
       <p id="best" class="best"></p>
     </div>
   </div>
 
   <div id="screen-pause" class="screen hidden">
-    <div class="panel small"><span class="eyebrow">TẠM DỪNG</span><h2>Hòn đảo vẫn chờ bạn.</h2><button id="btn-resume" class="primary">Tiếp tục <span>→</span></button><button id="btn-quit" class="ghost">Về màn hình chính</button></div>
+    <div class="panel small"><span class="eyebrow">TẠM DỪNG</span><h2>Hòn đảo vẫn chờ bạn.</h2>
+      <div class="mixer">
+        <label for="vol-music">Nhạc</label><input id="vol-music" type="range" min="0" max="1" step="0.05" value="0.8" />
+        <label for="vol-sfx">Hiệu ứng</label><input id="vol-sfx" type="range" min="0" max="1" step="0.05" value="0.9" />
+      </div>
+      <button id="btn-resume" class="primary">Tiếp tục <span>→</span></button><button id="btn-quit" class="ghost">Về màn hình chính</button></div>
   </div>
+
+  <aside id="screen-studio" class="hidden" aria-label="Xem chuyển động của Mira">
+    <header><div><span class="eyebrow">XƯỞNG CHUYỂN ĐỘNG</span><h2>Mira</h2></div><button id="studio-close" class="round" aria-label="Đóng">✕</button></header>
+    <p id="studio-info" class="studio-info"></p>
+    <div id="studio-motions"></div>
+    <section><h3>Góc camera</h3><div id="studio-views" class="chips"></div></section>
+    <section class="studio-controls">
+      <label for="studio-speed">Tốc độ <b id="studio-speed-val">1.00×</b></label>
+      <input id="studio-speed" type="range" min="0.1" max="1.5" step="0.05" value="1" />
+      <label class="check"><input id="studio-orbit" type="checkbox" /> Tự xoay quanh</label>
+      <label class="check"><input id="studio-bones" type="checkbox" /> Hiện bộ xương</label>
+    </section>
+    <p class="studio-hint">Kéo chuột hoặc vuốt để xoay, cuộn hoặc chụm 2 ngón để phóng to. Esc để thoát.</p>
+  </aside>
 
   <div id="screen-end" class="screen hidden">
     <div class="panel small">

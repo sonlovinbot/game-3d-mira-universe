@@ -215,3 +215,39 @@ h2 { font-family: var(--display); font-size: 30px; margin: 10px 0 18px; }
   #toast { bottom: calc(96px + var(--safe-b)); }
   #banner { top: 26%; }
 }
+
+/* ---------- Title actions ---------- */
+.title-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.secondary { padding: 13px 22px; border-radius: 99px; border: 1px solid rgba(127,240,255,.45); background: rgba(127,240,255,.08); color: var(--cyan); font-size: 15px; font-weight: 600; transition: background .15s, border-color .15s; }
+.secondary:hover:not(:disabled) { background: rgba(127,240,255,.16); border-color: var(--cyan); }
+.secondary:disabled { opacity: .4; cursor: wait; }
+.secondary:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+
+/* ---------- Pause mixer ---------- */
+.mixer { display: grid; grid-template-columns: auto 1fr; gap: 10px 14px; align-items: center; text-align: left; margin: 0 0 18px; font-size: 13px; color: var(--muted); }
+.mixer input, .studio-controls input[type=range] { width: 100%; accent-color: var(--gold); }
+
+/* ---------- Motion viewer ---------- */
+#screen-studio { position: absolute; top: calc(12px + var(--safe-t)); right: 12px; bottom: calc(12px + var(--safe-b)); width: min(360px, calc(100% - 24px)); z-index: 6; overflow-y: auto; padding: 18px 18px 16px; border-radius: 20px; background: rgba(16, 12, 38, .78); border: 1px solid var(--line); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 20px 60px rgba(0,0,0,.45); display: grid; align-content: start; gap: 14px; }
+#screen-studio header { display: flex; justify-content: space-between; align-items: start; }
+#screen-studio h2 { margin: 2px 0 0; font-size: 28px; }
+#screen-studio h3 { margin: 0 0 8px; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+#studio-motions { display: grid; gap: 12px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { padding: 8px 12px; border-radius: 99px; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.05); color: var(--ink); font-size: 13px; transition: background .15s, border-color .15s; }
+.chip.small { padding: 6px 10px; font-size: 12px; }
+.chip:hover { border-color: rgba(243,201,105,.5); }
+.chip.on { background: linear-gradient(135deg, #fff1c2, var(--gold)); color: #1a1333; border-color: transparent; font-weight: 700; }
+.chip:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.studio-info { margin: 0; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,.05); font-size: 13px; line-height: 1.55; }
+.studio-info b { color: var(--gold); }
+.studio-info span { color: var(--muted); font-size: 12px; }
+.studio-controls { display: grid; gap: 8px; font-size: 13px; }
+.studio-controls b { color: var(--gold); font-variant-numeric: tabular-nums; }
+.check { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+.check input { accent-color: var(--gold); width: 16px; height: 16px; }
+.studio-hint { margin: 0; font-size: 11px; color: var(--muted); }
+@media (max-width: 760px) {
+  #screen-studio { top: auto; left: 12px; right: 12px; width: auto; max-height: 46%; bottom: calc(12px + var(--safe-b)); }
+  #screen-studio h2 { font-size: 22px; }
+}

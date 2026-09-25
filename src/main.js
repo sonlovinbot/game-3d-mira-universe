@@ -16,6 +16,7 @@ import { Player } from './player.js';
 import { Skills } from './skills.js';
 import { Input } from './input.js';
 import { Sfx } from './audio.js';
+import { Studio } from './studio.js';
 
 const $ = (s) => document.querySelector(s);
 const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -61,8 +62,13 @@ const world = createWorld(scene, { low });
 const particles = new Particles(scene, low ? 1600 : 2600);
 const fx = new Effects(scene, particles);
 const overlay = new Overlay($('#overlay-layer'), camera);
-const sfx = new Sfx();
+const sfx = new Sfx(`${import.meta.env.BASE_URL}audio/`);
 const player = new Player(scene);
+player.onStep = () => {
+  if (G.state === 'title') return;
+  sfx.step();
+  particles.emit({ pos: { x: player.pos.x, y: 0.06, z: player.pos.z }, count: 3, color: '#9c93c9', intensity: 0.5, size: 0.3, speed: 0.7, life: 0.45, up: 0.3, flat: true });
+};
 player.reset();
 const enemies = new Enemies(scene, fx, particles, overlay, sfx);
 const cds = new Cooldowns(SKILLS);
@@ -119,6 +125,7 @@ function startGame() {
   $('#skills').classList.remove('hidden');
   $('#key-hint').classList.remove('hidden');
   resetRun();
+  sfx.music('explore');
   announce('Nhặt Linh Tinh', 'KHỞI ĐẦU', 2);
   canvas.focus();
 }
@@ -137,6 +144,7 @@ function collectCrystal() {
     const heal = Math.round(G.maxHp * UPGRADE.heal);
     G.hp = Math.min(G.maxHp, G.hp + heal);
     overlay.number(player.pos, `+${heal}`, 'heal');
+    sfx.upgrade();
     toast(`Linh Tinh: sát thương +${Math.round(UPGRADE.dmg * 100)}% · máu tối đa +${UPGRADE.maxHp} · hồi ${heal} máu`);
   } else toast('Linh Tinh thức tỉnh — yêu quái đang kéo đến!');
   if (G.wave + 1 >= WAVES.length) return victory();
@@ -151,6 +159,7 @@ function beginCountdown(i) {
   announce(w.name, `ĐỢT ${i + 1}`, 2.4, w.boss ? 'danger' : '');
   world.portals.forEach((p) => p.setActive(true));
   sfx.wave();
+  sfx.music(w.boss ? 'boss' : 'battle');
 }
 
 function startWave() {
@@ -169,11 +178,13 @@ function waveCleared() {
   announce(last ? 'Bóng tối tan biến' : 'Đợt tấn công đã bị đẩy lùi', `ĐỢT ${G.wave + 1} HOÀN THÀNH`, 2.2);
   objective(last ? 'Nhặt Linh Tinh cuối cùng để đón bình minh' : 'Linh Tinh đã hiện ra — nhặt để mạnh hơn', true);
   G.score += 150 * (G.wave + 1);
+  sfx.clear(); sfx.crystalAppear(); sfx.music('explore');
 }
 
 function victory() {
   G.state = 'victory';
-  sfx.win();
+  sfx.win(); sfx.music('end');
+  player.anim?.force('cheer');
   input.clear();
   G.after(1.4, () => showEnd(true));
   for (let i = 0; i < 6; i++) G.after(i * 0.2, () => fx.ring({ x: player.pos.x, z: player.pos.z }, { color: i % 2 ? '#ffd76a' : '#7ff0ff', to: 6 + i, dur: 1 }));
@@ -207,9 +218,9 @@ function damagePlayer(amount, src) {
   if (src) { const dx = player.pos.x - src.pos.x, dz = player.pos.z - src.pos.z, d = Math.hypot(dx, dz) || 1; knock.set((dx / d) * 7, 0, (dz / d) * 7); }
   if (G.hp <= 0) {
     G.state = 'dead';
-    player.dead = true;
+    player.die();
     input.clear();
-    sfx.lose();
+    sfx.lose(); sfx.music('end');
     announce('Mira đã gục ngã', '', 1.6, 'danger');
     G.after(1.6, () => showEnd(false));
   }
@@ -264,6 +275,8 @@ function updateHUD() {
   $('#en-fill').style.width = `${G.energy}%`;
   $('#en-text').textContent = G.energy >= 100 ? 'Tuyệt kỹ sẵn sàng · U' : `Tuyệt kỹ ${Math.floor(G.energy)}%`;
   $('.bar.en').classList.toggle('full', G.energy >= 100);
+  if (G.energy >= 100 && !G.ultWasReady) sfx.ultReady();
+  G.ultWasReady = G.energy >= 100;
   $('#lvl').textContent = `Sát thương ×${G.dmgMul.toFixed(2)}`;
   $('#score').textContent = G.score.toLocaleString('vi-VN');
   for (const k in skillEls) {
@@ -311,6 +324,12 @@ function frame(now) {
 }
 function tick(dt) {
   elapsed += dt;
+  if (G.state === 'studio') {
+    studio.update(dt);
+    world.update(elapsed, dt); particles.update(dt); fx.update(dt);
+    moon.position.set(player.pos.x - 9, 22, player.pos.z + 6); moon.target.position.set(player.pos.x, 0, player.pos.z);
+    return;
+  }
   if (G.hitstopT > 0) { G.hitstopT -= dt; dt *= 0.08; }
 
   // timers
@@ -348,7 +367,6 @@ function tick(dt) {
       player.vel.x += (tx - player.vel.x) * a; player.vel.z += (tz - player.vel.z) * a;
       player.pos.x += player.vel.x * dt; player.pos.z += player.vel.z * dt;
       if (m.len > 0.05 && !(player.action && ['slash', 'bolt'].includes(player.action.name))) player.face(Math.atan2(m.x, m.z));
-      if (m.len > 0.3 && Math.random() < dt * 14) particles.emit({ pos: { x: player.pos.x, y: 0.08, z: player.pos.z }, count: 1, color: '#9c93c9', intensity: 0.5, size: 0.35, speed: 0.6, life: 0.5, up: 0.4 });
     }
     player.pos.addScaledVector(knock, dt); knock.multiplyScalar(Math.exp(-dt * 8));
     resolveCollisions(player.pos, player.r);
@@ -369,7 +387,8 @@ function tick(dt) {
   // player invulnerability blink / hurt tint
   const blink = G.invul > 0 && !G.dash && Math.floor(elapsed * 20) % 2 === 0;
   player.setTint(player.hurtT > 0 ? 0.6 : blink ? 0.25 : 0, HURT);
-  player.update(dt, G.dash ? 1 : Math.min(1, Math.hypot(player.vel.x, player.vel.z) / PLAYER.speed));
+  const moveSpeed = G.dash ? 7 : Math.hypot(player.vel.x, player.vel.z);
+  player.update(dt, Math.min(1, moveSpeed / PLAYER.speed), moveSpeed);
 
   if (G.state !== 'title') enemies.update(dt, player, G);
   skills.update(dt);
@@ -435,10 +454,12 @@ $('#btn-quit').onclick = () => {
   $('#hud').classList.add('hidden'); $('#skills').classList.add('hidden'); $('#key-hint').classList.add('hidden');
   $('#screen-title').classList.remove('hidden');
   document.body.classList.remove('ingame');
+  sfx.music('title');
 };
 $('#btn-sound').onclick = () => { sfx.unlock(); sfx.setMuted(!sfx.muted); $('#btn-sound').classList.toggle('off', sfx.muted); $('#btn-sound').setAttribute('aria-label', sfx.muted ? 'Bật âm thanh' : 'Tắt âm thanh'); storage.set('mira-muted', sfx.muted ? '1' : '0'); };
 if (storage.get('mira-muted') === '1') { sfx.muted = true; $('#btn-sound').classList.add('off'); }
 addEventListener('keydown', (e) => {
+  if (e.code === 'Escape' && G.state === 'studio') { studio.exit(); return; }
   if (e.code === 'Escape' || e.code === 'KeyP') setPaused(!G.paused);
   if (e.code === 'KeyM') $('#btn-sound').click();
   if (e.code === 'Enter' && G.state === 'title' && !$('#btn-start').disabled && document.activeElement?.tagName !== 'BUTTON') startGame();
@@ -447,19 +468,43 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) setPa
 const best = Number(storage.get('mira-best') || 0);
 if (best) $('#best').textContent = `Kỷ lục của bạn: ${best.toLocaleString('vi-VN')} điểm`;
 
+/* ---------- Motion viewer ---------- */
+const studio = new Studio({
+  camera, canvas, scene, player, sfx, panel: $('#screen-studio'),
+  onExit: () => { G.state = 'title'; world.crystal.show(); $('#screen-title').classList.remove('hidden'); sfx.music('title'); $('#btn-studio').focus(); },
+});
+function openStudio() {
+  sfx.unlock(); sfx.open();
+  G.state = 'studio';
+  world.crystal.hide();
+  $('#screen-title').classList.add('hidden');
+  studio.enter();
+}
+$('#btn-studio').onclick = openStudio;
+for (const b of document.querySelectorAll('.screen button, #btn-pause, #btn-sound')) b.addEventListener('click', () => sfx.click());
+$('#vol-music').oninput = (e) => { sfx.unlock(); sfx.setLevel('music', Number(e.target.value)); storage.set('mira-vol-music', e.target.value); };
+$('#vol-sfx').oninput = (e) => { sfx.unlock(); sfx.setLevel('sfx', Number(e.target.value)); storage.set('mira-vol-sfx', e.target.value); };
+for (const [k, id] of [['music', '#vol-music'], ['sfx', '#vol-sfx']]) { const v = storage.get(`mira-vol-${k}`); if (v !== null) { $(id).value = v; sfx.levels[k] = Number(v); } }
+addEventListener('pointerdown', () => { if (G.state === 'title') sfx.unlock(); }, { once: true });
+
 /* ---------- Boot ---------- */
 world.crystal.show();
 renderer.setAnimationLoop(frame);
-const glbUrl = window.MIRA_GLB_URL || `${import.meta.env.BASE_URL}mira.glb`;
-player.load(glbUrl, renderer, (e) => {
+const BASE = import.meta.env.BASE_URL;
+const glbUrls = [`${BASE}mira-rigged.glb`, `${BASE}mira.glb`];
+player.load(glbUrls, renderer, (e) => {
   if (!e.total) return;
   const p = Math.round((e.loaded / e.total) * 100);
   $('#load-fill').style.width = `${p}%`;
   $('#load-text').textContent = `Đang tải Mira… ${p}%`;
 }).then((info) => {
   $('#load-fill').style.width = '100%';
-  $('#load-text').textContent = info.clips.length ? `Mira đã sẵn sàng · ${info.clips.length} hoạt ảnh` : 'Mira đã sẵn sàng';
+  $('#load-text').textContent = info.rigged ? `Mira đã sẵn sàng · ${info.bones} xương · ${player.anim.motions.length} chuyển động` : 'Mira đã sẵn sàng';
   $('#btn-start').disabled = false;
+  $('#btn-studio').disabled = !info.rigged;
+  // Optional keyframed clips: list GLB files in public/anims/manifest.json
+  fetch(`${BASE}anims/manifest.json`).then((r) => (r.ok ? r.json() : [])).then((list) => list.length && player.loadClips(list.map((f) => `${BASE}anims/${f}`))).catch(() => {});
+  if (location.hash === '#studio' && info.rigged) openStudio();
   $('#btn-start').focus();
   renderer.compile(scene, camera);
 }).catch((err) => {
@@ -479,5 +524,6 @@ if (DEBUG) {
     skipTo: (i) => { G.wave = i - 1; },
     advance: (sec) => { const n = Math.round(sec * 30); for (let i = 0; i < n; i++) tick(1 / 30); },
     press: (k) => input.press(k),
+    studio, openStudio,
   };
 }

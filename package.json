@@ -7,7 +7,7 @@
     "dev": "vite --host 0.0.0.0 --port 5190",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0 --port 5190",
-    "test": "node --test tests/logic.test.js"
+    "test": "node --test tests/logic.test.js tests/motions.test.js"
   },
   "dependencies": {
     "three": "^0.180.0"
