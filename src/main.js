@@ -17,6 +17,7 @@ import { Skills } from './skills.js';
 import { Input } from './input.js';
 import { Sfx } from './audio.js';
 import { Studio } from './studio.js';
+import { initPwa } from './pwa/pwa.js';
 
 const $ = (s) => document.querySelector(s);
 const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -522,6 +523,8 @@ player.load(glbUrls, renderer, (e) => {
   console.error(err);
   $('#load-text').textContent = 'Không tải được nhân vật. Hãy tải lại trang.';
 });
+
+initPwa();
 
 if (DEBUG) {
   window.__MIRA__ = {

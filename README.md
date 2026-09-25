@@ -7,6 +7,7 @@ Màn chơi 3D trên web (three.js): Mira đứng trên một hòn đảo bay lú
 - **Chơi online:** https://sonlovinbot.github.io/game-3d-mira-universe/
 - **Xem riêng các chuyển động:** nút **Xem chuyển động** ở màn hình đầu, hoặc https://sonlovinbot.github.io/game-3d-mira-universe/#studio
 - Chơi được trên máy tính (bàn phím, chuột) và điện thoại (cần ảo, nút chạm).
+- **Cài như ứng dụng (PWA):** bấm **Cài về máy** ở màn hình đầu (Chrome, Edge, Android) hoặc Safari → Chia sẻ → Thêm vào MH chính (iPhone, iPad). Bản cài chạy toàn màn hình và chơi được khi không có mạng.
 
 ## Cách chơi
 
@@ -141,6 +142,14 @@ Tối ưu: `gltf-transform optimize mira_slash.glb mira-rigged.glb --texture-com
 | Tuyệt kỹ sẵn sàng / bắt đầu đợt / hết đợt | unlock-game-notification / medieval-show-fanfare / completion-of-a-level |
 | Thắng / thua / bấm nút / mở xưởng | game-level-completed / player-losing-or-failing / video-game-retro-click / quick-positive-notification |
 
+## PWA (cài về máy, chơi offline)
+
+- `public/manifest.webmanifest`: tên, icon (`public/icons/`, có bản maskable cho Android), ảnh chụp cho hộp thoại cài (`public/pwa/`), mở toàn màn hình, lối tắt "Xem chuyển động".
+- `src/pwa/sw-template.js`: service worker. Khi cài, nó tải sẵn toàn bộ game (khoảng 3,5 MB: code, nhân vật GLB, âm thanh, icon). Trang HTML lấy mạng trước, mất mạng thì dùng bản đã lưu. Các file khác lấy từ bộ nhớ đệm trước. Google Fonts được lưu lại để dùng offline.
+- `vite.config.js` (plugin `mira-pwa`): sau mỗi lần `npm run build`, plugin liệt kê các file trong `dist/` rồi sinh `dist/sw.js`, kèm mã phiên bản là hash nội dung. Không dùng thư viện ngoài.
+- `src/pwa/pwa.js`: đăng ký service worker (chỉ ở bản build, `npm run dev` thì không), hiện nút **Cài về máy** và hướng dẫn riêng cho iOS, báo **Đã có bản Mira mới → Cập nhật** khi deploy bản mới.
+- Muốn thử offline ở máy: `npm run build && npm run preview`, mở DevTools → Application → Service workers, tích Offline rồi tải lại.
+
 ## Deploy GitHub Pages
 
 - `.github/workflows/deploy.yml`: mỗi lần push nhánh `main`, GitHub Actions chạy test, build và xuất bản `dist/` lên Pages (Settings → Pages → Source: GitHub Actions).
@@ -161,6 +170,7 @@ src/fx.js         Hạt, vệt chém, sóng, số sát thương
 src/input.js      Bàn phím, chuột, cần ảo, nút chạm
 src/audio.js      Âm thanh
 src/main.js       Vòng lặp, camera, luồng màn chơi, HUD
+src/pwa/          Service worker (mẫu) và nút cài, báo cập nhật
 dev/rigtest.html  Trang kiểm tra pose 3 góc nhìn (chỉ chạy khi npm run dev)
 docs/images/      Ảnh thiết kế, quy trình dựng nhân vật, ảnh chụp game
 ```

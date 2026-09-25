@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
 <meta name="theme-color" content="#120f2b" />
 <title>Mira · Đêm Linh Quang</title>
+<meta name="description" content="Màn chơi 3D trên web: Mira nhặt Linh Tinh, đánh 5 đợt yêu quái và trùm Hắc Nguyệt Thú." />
+<link rel="manifest" href="./manifest.webmanifest" />
+<link rel="icon" type="image/png" href="./icons/favicon-64.png" />
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Mira" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
@@ -44,6 +52,7 @@
 
     <div id="toast"></div>
   </div>
+  <div id="pwa-bar" class="hidden" role="status" aria-live="polite"><span></span><button type="button" class="hidden"></button></div>
 
   <div id="banner" aria-live="polite"><small id="banner-sub"></small><h2 id="banner-title"></h2></div>
 
@@ -87,10 +96,22 @@
       <div class="title-actions">
         <button id="btn-start" class="primary" disabled>Bắt đầu <span>→</span></button>
         <button id="btn-studio" class="secondary" disabled>Xem chuyển động</button>
+        <button id="btn-install" class="secondary install hidden" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Cài về máy</button>
       </div>
       <div class="audio-row"><button class="toggle tg-music" type="button" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17V5l10-2v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.5" fill="currentColor"/><circle cx="16.5" cy="15.5" r="2.5" fill="currentColor"/></svg><span>Nhạc nền</span></button><button class="toggle tg-sfx" type="button" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="wave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Hiệu ứng</span></button></div>
       <p id="best" class="best"></p>
     </div>
+  </div>
+
+  <div id="install-hint" class="screen hidden" role="dialog" aria-label="Cài Mira trên iPhone, iPad">
+    <div class="panel small"><span class="eyebrow">CÀI VỀ MÀN HÌNH CHÍNH</span><h2>Chơi Mira như một ứng dụng</h2>
+      <ol class="install-steps">
+        <li>Mở trang này bằng <b>Safari</b>.</li>
+        <li>Bấm nút <b>Chia sẻ</b> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4M6 11H5v10h14V11h-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> ở thanh công cụ.</li>
+        <li>Chọn <b>Thêm vào MH chính</b> rồi bấm <b>Thêm</b>.</li>
+      </ol>
+      <p class="install-note">Mở Mira từ biểu tượng trên màn hình chính: chơi toàn màn hình và vẫn chơi được khi không có mạng.</p>
+      <button type="button" class="primary">Đã hiểu</button></div>
   </div>
 
   <div id="screen-pause" class="screen hidden">

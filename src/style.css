@@ -265,3 +265,15 @@ h2 { font-family: var(--display); font-size: 30px; margin: 10px 0 18px; }
 .toggle.off svg { color: var(--muted); }
 .toggle:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
 .studio-controls .audio-row { margin-top: 4px; }
+
+/* PWA: nút cài, thanh báo, hướng dẫn iOS */
+.secondary.install { display: inline-flex; align-items: center; gap: 8px; border-color: rgba(243,201,105,.5); background: rgba(243,201,105,.08); color: var(--gold); }
+.secondary.install:hover { background: rgba(243,201,105,.16); border-color: var(--gold); }
+.secondary.install svg { width: 18px; height: 18px; }
+#pwa-bar { position: absolute; top: calc(12px + var(--safe-t)); left: 50%; transform: translateX(-50%); z-index: 20; display: flex; align-items: center; gap: 12px; max-width: calc(100% - 32px); padding: 8px 8px 8px 16px; border-radius: 99px; background: rgba(20,15,46,.9); border: 1px solid var(--line); backdrop-filter: blur(10px); color: var(--gold); font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+#pwa-bar span { padding: 4px 0; }
+#pwa-bar button { flex: none; padding: 6px 14px; border-radius: 99px; border: 0; background: var(--gold); color: #1b1433; font-weight: 700; font-size: 13px; }
+#install-hint { z-index: 15; }
+.install-steps { margin: 16px 0 10px; padding-left: 22px; text-align: left; line-height: 1.7; }
+.install-steps svg { width: 18px; height: 18px; vertical-align: -3px; color: var(--cyan); }
+.install-note { margin: 0 0 18px; color: var(--muted); font-size: 13px; text-align: left; }
