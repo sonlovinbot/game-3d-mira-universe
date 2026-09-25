@@ -4,8 +4,8 @@
 
 Màn chơi 3D trên web (three.js): Mira đứng trên một hòn đảo bay lúc chạng vạng, nhặt Linh Tinh trên tế đàn, đánh 5 đợt yêu quái mạnh dần và trùm Hắc Nguyệt Thú. Mira có bộ xương thật: đứng thở, đi, chạy, phanh dừng, chém, bắn, nhảy, trúng đòn, gục ngã.
 
-- **Chơi online:** https://miragame.danghuuson.com/ (link cũ `sonlovinbot.github.io/game-3d-mira/` tự chuyển về đây)
-- **Xem riêng các chuyển động:** nút **Xem chuyển động** ở màn hình đầu, hoặc https://miragame.danghuuson.com/#studio
+- **Chơi online:** https://sonlovinbot.github.io/game-3d-mira-universe/
+- **Xem riêng các chuyển động:** nút **Xem chuyển động** ở màn hình đầu, hoặc https://sonlovinbot.github.io/game-3d-mira-universe/#studio
 - Chơi được trên máy tính (bàn phím, chuột) và điện thoại (cần ảo, nút chạm).
 
 ## Cách chơi
@@ -144,7 +144,7 @@ Tối ưu: `gltf-transform optimize mira_slash.glb mira-rigged.glb --texture-com
 ## Deploy GitHub Pages
 
 - `.github/workflows/deploy.yml`: mỗi lần push nhánh `main`, GitHub Actions chạy test, build và xuất bản `dist/` lên Pages (Settings → Pages → Source: GitHub Actions).
-- Tên miền riêng: `miragame.danghuuson.com`, bản ghi **CNAME `miragame` → `sonlovinbot.github.io`** tại DNS của AZDIGI (nameserver `ns1/ns2.azdigi.com`), bật Enforce HTTPS. Code dùng đường dẫn tương đối nên chạy được cả ở tên miền gốc lẫn thư mục con.
+- Code dùng đường dẫn tương đối (`base: './'`) nên chạy được ở thư mục con của Pages hay ở tên miền riêng mà không cần sửa.
 - `Day-len-GitHub.command`: nháy đúp để push bằng tài khoản git trên máy.
 
 ## Cấu trúc code
