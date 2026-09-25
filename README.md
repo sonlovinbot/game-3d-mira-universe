@@ -1,9 +1,76 @@
 # Mira · Đêm Linh Quang
 
+![Mira trên hòn đảo bay](docs/images/game/01-man-hinh-dau.jpg)
+
 Màn chơi 3D trên web (three.js): Mira đứng trên một hòn đảo bay lúc chạng vạng, nhặt Linh Tinh trên tế đàn, đánh 5 đợt yêu quái mạnh dần và trùm Hắc Nguyệt Thú. Mira có bộ xương thật: đứng thở, đi, chạy, phanh dừng, chém, bắn, nhảy, trúng đòn, gục ngã.
 
-- Chơi online (sau khi deploy): https://sonlovinbot.github.io/game-3d-mira/
-- Xem riêng các chuyển động: nút **Xem chuyển động** ở màn hình đầu, hoặc thêm `#studio` vào cuối link.
+- **Chơi online:** https://miragame.danghuuson.com/ (link cũ `sonlovinbot.github.io/game-3d-mira/` tự chuyển về đây)
+- **Xem riêng các chuyển động:** nút **Xem chuyển động** ở màn hình đầu, hoặc https://miragame.danghuuson.com/#studio
+- Chơi được trên máy tính (bàn phím, chuột) và điện thoại (cần ảo, nút chạm).
+
+## Cách chơi
+
+| Hành động | Bàn phím | Cảm ứng |
+|---|---|---|
+| Di chuyển | W A S D / phím mũi tên | Kéo nửa trái màn hình |
+| Chém Nguyệt Quang | J / chuột trái | Nút lớn bên phải |
+| Tia Linh Quang (bám mục tiêu) | K | Nút tia sáng |
+| Vòng Tinh Tú (nổ lan, đẩy lùi) | L | Nút vòng tròn |
+| Lướt Gió (không mất máu khi lướt) | Space / Shift | Nút lướt |
+| Mưa Sao Băng (khi thanh vàng đầy) | U | Nút sao băng |
+| Tạm dừng · Nhạc nền · Hiệu ứng | Esc · M · N | Các nút góc trên |
+
+Nhặt Linh Tinh ở tế đàn để mở cổng, hết mỗi đợt quái Linh Tinh hiện lại (sát thương +12%, máu tối đa +10, hồi 40% máu). 5 đợt: Slime Bóng Tối → Ma Trơi → Thạch Quỷ → đợt dồn dập → trùm Hắc Nguyệt Thú (đập đất có vòng đỏ báo trước, bắn vòng hạt tối, gọi thêm quái, nổi giận khi dưới 50% máu).
+
+## Hình ảnh
+
+### Thiết kế nhân vật và quái
+
+Mira được vẽ thiết kế 4 góc bằng AI tạo ảnh, rồi dựng 3D bằng Tripo. Bộ quái (Slime, Ma Trơi, Thạch Quỷ, Hắc Nguyệt Thú) có ảnh concept; trong game quái được dựng bằng khối hình học trong code.
+
+| Trước | Sau | Trái | Phải |
+|---|---|---|---|
+| ![](docs/images/concept/mira-concept-1.jpg) | ![](docs/images/concept/mira-concept-2.jpg) | ![](docs/images/concept/mira-concept-3.jpg) | ![](docs/images/concept/mira-concept-4.jpg) |
+
+| Tư thế ra chiêu (storyboard) | Quái vật (concept) |
+|---|---|
+| ![](docs/images/concept/mira-cast-storyboard.jpg) | ![](docs/images/concept/monster-concepts.jpg) |
+
+### Từ ảnh đến nhân vật cử động được
+
+| 1. Mesh Tripo (502.944 mặt, chưa có xương) | 2. Có texture PBR |
+|---|---|
+| ![](docs/images/pipeline/tripo-mesh.jpg) | ![](docs/images/pipeline/tripo-textured.jpg) |
+
+3\. Retopology còn 19.577 tam giác → Auto Rig 65 xương chuẩn Mixamo trên Tripo → chuyển động dựng bằng code trên bộ xương đó. Bảng dưới: mỗi ô là góc trước + góc nghiêng, đường xanh là bộ xương.
+
+![Bảng tư thế trên bộ xương](docs/images/rig/18-bang-tu-the-xuong.jpg)
+
+### Xưởng chuyển động (trong game)
+
+| Đứng thở | Đi bộ | Chạy |
+|---|---|---|
+| ![](docs/images/game/02-xuong-dung-tho.jpg) | ![](docs/images/game/03-xuong-di-bo.jpg) | ![](docs/images/game/04-xuong-chay.jpg) |
+| **Chém Nguyệt Quang** | **Tia Linh Quang** | **Vòng Tinh Tú (nhảy)** |
+| ![](docs/images/game/05-xuong-chem.jpg) | ![](docs/images/game/06-xuong-tia-sang.jpg) | ![](docs/images/game/07-xuong-nhay.jpg) |
+| **Hiện bộ xương** | **Trình diễn chạy vòng tròn** | |
+| ![](docs/images/game/08-xuong-bo-xuong.jpg) | ![](docs/images/game/09-xuong-chay-vong.jpg) | |
+
+### Trong trận
+
+| Nhặt Linh Tinh | Đánh quái | Vòng Tinh Tú |
+|---|---|---|
+| ![](docs/images/game/10-nhat-linh-tinh.jpg) | ![](docs/images/game/11-danh-quai.jpg) | ![](docs/images/game/12-vong-tinh-tu.jpg) |
+| **Mưa Sao Băng** | **Trùm Hắc Nguyệt Thú đập đất** | **Nhặt Linh Tinh cuối** |
+| ![](docs/images/game/13-mua-sao-bang.jpg) | ![](docs/images/game/14-trum.jpg) | ![](docs/images/game/15-chien-thang.jpg) |
+
+### Điện thoại
+
+| Màn hình đầu | Đang chơi |
+|---|---|
+| <img src="docs/images/game/16-dien-thoai-man-hinh-dau.jpg" width="260"> | <img src="docs/images/game/17-dien-thoai-choi.jpg" width="260"> |
+
+Bản đầu tiên (Mira chưa có xương, chỉ nhún cả khối): `docs/images/v1/v1-chua-co-xuong.jpg`.
 
 ## Chạy trên máy
 
@@ -76,7 +143,8 @@ Tối ưu: `gltf-transform optimize mira_slash.glb mira-rigged.glb --texture-com
 
 ## Deploy GitHub Pages
 
-- `.github/workflows/deploy.yml`: mỗi lần push nhánh `main`, GitHub Actions chạy test, build và xuất bản `dist/` lên Pages. Lần đầu cần vào **Settings → Pages → Source → GitHub Actions**.
+- `.github/workflows/deploy.yml`: mỗi lần push nhánh `main`, GitHub Actions chạy test, build và xuất bản `dist/` lên Pages (Settings → Pages → Source: GitHub Actions).
+- Tên miền riêng: `miragame.danghuuson.com`, bản ghi **CNAME `miragame` → `sonlovinbot.github.io`** tại DNS của AZDIGI (nameserver `ns1/ns2.azdigi.com`), bật Enforce HTTPS. Code dùng đường dẫn tương đối nên chạy được cả ở tên miền gốc lẫn thư mục con.
 - `Day-len-GitHub.command`: nháy đúp để push bằng tài khoản git trên máy.
 
 ## Cấu trúc code
@@ -93,6 +161,8 @@ src/fx.js         Hạt, vệt chém, sóng, số sát thương
 src/input.js      Bàn phím, chuột, cần ảo, nút chạm
 src/audio.js      Âm thanh
 src/main.js       Vòng lặp, camera, luồng màn chơi, HUD
+dev/rigtest.html  Trang kiểm tra pose 3 góc nhìn (chỉ chạy khi npm run dev)
+docs/images/      Ảnh thiết kế, quy trình dựng nhân vật, ảnh chụp game
 ```
 
 `?debug` trên URL mở `window.__MIRA__` để kiểm thử (`advance`, `teleport`, `god`, `killAll`, `skipTo`, `openStudio`, `info`).
