@@ -456,12 +456,23 @@ $('#btn-quit').onclick = () => {
   document.body.classList.remove('ingame');
   sfx.music('title');
 };
-$('#btn-sound').onclick = () => { sfx.unlock(); sfx.setMuted(!sfx.muted); $('#btn-sound').classList.toggle('off', sfx.muted); $('#btn-sound').setAttribute('aria-label', sfx.muted ? 'Bật âm thanh' : 'Tắt âm thanh'); storage.set('mira-muted', sfx.muted ? '1' : '0'); };
-if (storage.get('mira-muted') === '1') { sfx.muted = true; $('#btn-sound').classList.add('off'); }
+/* Music and sound effects switch on/off separately; the choice is remembered. */
+function syncAudioUI() {
+  document.querySelectorAll('.tg-music').forEach((b) => { b.setAttribute('aria-pressed', String(sfx.musicOn)); b.classList.toggle('off', !sfx.musicOn); const s = b.querySelector('span'); if (s) s.textContent = sfx.musicOn ? 'Nhạc nền: bật' : 'Nhạc nền: tắt'; });
+  document.querySelectorAll('.tg-sfx').forEach((b) => { b.setAttribute('aria-pressed', String(sfx.sfxOn)); b.classList.toggle('off', !sfx.sfxOn); const s = b.querySelector('span'); if (s) s.textContent = sfx.sfxOn ? 'Hiệu ứng: bật' : 'Hiệu ứng: tắt'; });
+}
+function toggleMusic() { sfx.unlock(); sfx.setMusicOn(!sfx.musicOn); storage.set('mira-music', sfx.musicOn ? '1' : '0'); syncAudioUI(); }
+function toggleSfx() { sfx.unlock(); sfx.setSfxOn(!sfx.sfxOn); storage.set('mira-sfx', sfx.sfxOn ? '1' : '0'); syncAudioUI(); sfx.click(); }
+document.querySelectorAll('.tg-music').forEach((b) => (b.onclick = toggleMusic));
+document.querySelectorAll('.tg-sfx').forEach((b) => (b.onclick = toggleSfx));
+if (storage.get('mira-music') === '0') sfx.musicOn = false;
+if (storage.get('mira-sfx') === '0') sfx.sfxOn = false;
+syncAudioUI();
 addEventListener('keydown', (e) => {
   if (e.code === 'Escape' && G.state === 'studio') { studio.exit(); return; }
   if (e.code === 'Escape' || e.code === 'KeyP') setPaused(!G.paused);
-  if (e.code === 'KeyM') $('#btn-sound').click();
+  if (e.code === 'KeyM') toggleMusic();
+  if (e.code === 'KeyN') toggleSfx();
   if (e.code === 'Enter' && G.state === 'title' && !$('#btn-start').disabled && document.activeElement?.tagName !== 'BUTTON') startGame();
 });
 document.addEventListener('visibilitychange', () => { if (document.hidden) setPaused(true); });
@@ -481,7 +492,7 @@ function openStudio() {
   studio.enter();
 }
 $('#btn-studio').onclick = openStudio;
-for (const b of document.querySelectorAll('.screen button, #btn-pause, #btn-sound')) b.addEventListener('click', () => sfx.click());
+for (const b of document.querySelectorAll('.screen button:not(.tg-sfx):not(.tg-music), #btn-pause')) b.addEventListener('click', () => sfx.click());
 $('#vol-music').oninput = (e) => { sfx.unlock(); sfx.setLevel('music', Number(e.target.value)); storage.set('mira-vol-music', e.target.value); };
 $('#vol-sfx').oninput = (e) => { sfx.unlock(); sfx.setLevel('sfx', Number(e.target.value)); storage.set('mira-vol-sfx', e.target.value); };
 for (const [k, id] of [['music', '#vol-music'], ['sfx', '#vol-sfx']]) { const v = storage.get(`mira-vol-${k}`); if (v !== null) { $(id).value = v; sfx.levels[k] = Number(v); } }
@@ -524,6 +535,6 @@ if (DEBUG) {
     skipTo: (i) => { G.wave = i - 1; },
     advance: (sec) => { const n = Math.round(sec * 30); for (let i = 0; i < n; i++) tick(1 / 30); },
     press: (k) => input.press(k),
-    studio, openStudio,
+    studio, openStudio, sfx,
   };
 }

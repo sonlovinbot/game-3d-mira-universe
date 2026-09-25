@@ -34,8 +34,12 @@ function stance(p, k = 1) {
   set(p, 'LeftHand', 0, 0, -6 * k); set(p, 'RightHand', 0, 0, 6 * k);
   set(p, 'LeftLeg', 3 * k); set(p, 'RightLeg', 3 * k);
   set(p, 'LeftFoot', -3 * k); set(p, 'RightFoot', -3 * k);
+  // The model was built in a wide A-pose; bring the legs in so the feet sit under the hips.
+  set(p, 'LeftUpLeg', 0, 0, -LEG_IN); set(p, 'RightUpLeg', 0, 0, LEG_IN);
+  set(p, 'LeftFoot', 0, 0, LEG_IN); set(p, 'RightFoot', 0, 0, -LEG_IN);
   return p;
 }
+const LEG_IN = 5;
 
 /* ---------------------------------------------------------------- idle */
 function idle(t) {
@@ -62,7 +66,10 @@ function gait(phase, g) {
   const A = lerp(26, 44, g.run);                    // thigh swing
   // thighs: left forward when s > 0
   const thL = -A * s - g.run * 6, thR = A * s - g.run * 6;
-  set(p, 'LeftUpLeg', thL, 0, 0); set(p, 'RightUpLeg', thR, 0, 0);
+  // narrower track while moving: each foot lands close to the centre line
+  const track = lerp(3, 4, g.run);
+  set(p, 'LeftUpLeg', thL, 0, -track); set(p, 'RightUpLeg', thR, 0, track);
+  set(p, 'LeftFoot', 0, 0, track); set(p, 'RightFoot', 0, 0, -track);
   // knees bend through the swing phase, a little at contact
   const kneeSwing = lerp(48, 95, g.run), kneeLoad = lerp(8, 22, g.run);
   const kL = kneeLoad * bump(phase, 0.3, 0.18) + kneeSwing * Math.pow(Math.max(0, c), 1.4) + 4;

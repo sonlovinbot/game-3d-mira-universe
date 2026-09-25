@@ -251,3 +251,17 @@ h2 { font-family: var(--display); font-size: 30px; margin: 10px 0 18px; }
   #screen-studio { top: auto; left: 12px; right: 12px; width: auto; max-height: 46%; bottom: calc(12px + var(--safe-b)); }
   #screen-studio h2 { font-size: 22px; }
 }
+
+/* ---------- Audio switches ---------- */
+.round svg { width: 20px; height: 20px; }
+.round { display: grid; place-items: center; color: var(--ink); }
+.round.off { opacity: .45; text-decoration: none; }
+.round.off::after { content: ''; position: absolute; width: 26px; height: 2px; background: var(--rose); transform: rotate(-45deg); border-radius: 2px; }
+.round { position: relative; }
+.audio-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.toggle { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 99px; border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.05); color: var(--ink); font-size: 13px; }
+.toggle svg { width: 18px; height: 18px; color: var(--gold); }
+.toggle.off { color: var(--muted); }
+.toggle.off svg { color: var(--muted); }
+.toggle:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.studio-controls .audio-row { margin-top: 4px; }

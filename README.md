@@ -30,7 +30,7 @@ Tối ưu: `gltf-transform optimize mira_slash.glb mira-rigged.glb --texture-com
 ## Hệ thống chuyển động (`src/anim/`)
 
 - **`rig.js`**: tìm xương theo tên Mixamo, lưu tư thế gốc. Mọi pose viết trong *hệ trục nhân vật* (+Z trước mặt, +Y lên, +X bên trái Mira), góc bằng độ, nên đọc như chỉnh tượng bằng tay: `LeftUpLeg x = -30` là đá đùi trái ra trước 30°.
-- **`motions.js`**: thư viện 11 chuyển động: đứng thở, đi, chạy, dừng, chém, tia sáng, nhảy, lướt, trúng đòn, gục ngã, vẫy chào. Đi và chạy sinh từ **một** hàm dáng đi có tham số, nên pha trộn liên tục được.
+- **`motions.js`**: tư thế nền khép chân lại (mô hình gốc dạng chân chữ A khá rộng), khi đi/chạy bàn chân đặt gần đường giữa. Thư viện 11 chuyển động: đứng thở, đi, chạy, dừng, chém, tia sáng, nhảy, lướt, trúng đòn, gục ngã, vẫy chào. Đi và chạy sinh từ **một** hàm dáng đi có tham số, nên pha trộn liên tục được.
 - **`animator.js`**, chạy mỗi khung hình:
   - Đi ↔ chạy trộn theo tốc độ trên cùng một pha. Pha tiến theo quãng đường thật (tốc độ ÷ sải chân) nên chân không trượt.
   - Khi đang chạy mà dừng thì có động tác phanh rồi trở về thế đứng.
@@ -57,16 +57,12 @@ Tối ưu: `gltf-transform optimize mira_slash.glb mira-rigged.glb --texture-com
 
 ## Âm thanh (`src/audio.js`, `public/audio/`)
 
-- 20 hiệu ứng lấy từ bộ Mixkit Game SFX: cắt khoảng lặng, fade, chuẩn hoá đỉnh −3 dB, MP3 mono. Một nhạc nền lặp 30 giây, nối vòng bằng crossfade 1,2 giây để không bị tiếng tách.
-- 3 kênh Nhạc / Hiệu ứng / Giao diện đi vào một limiter. Âm lượng Nhạc và Hiệu ứng chỉnh trong màn Tạm dừng.
+- **Nhạc nền và hiệu ứng tách riêng**, mỗi thứ có công tắc bật/tắt riêng ở màn hình đầu, trong Xưởng chuyển động và trên HUD (phím tắt `M` cho nhạc, `N` cho hiệu ứng). Lựa chọn được nhớ cho lần sau.
+- **Nhạc nền là "hộp nhạc đêm" sinh bằng code**: nốt sine gảy nhẹ trên âm giai ngũ cung Rê, bass trầm mỗi nhịp, tiếng vọng nhẹ. Không trống, không nốt ngân kéo dài. Theo trạng thái: chậm ở màn hình đầu và Xưởng; dày hơn khi đánh; chuyển sang giọng thứ khi gặp trùm; tắt dần khi hết ván. Nhạc Mixkit cũ (nhịp trống giật) đã bị bỏ.
+- 20 hiệu ứng lấy từ bộ Mixkit Game SFX: cắt khoảng lặng, fade, chuẩn hoá đỉnh −3 dB, MP3 mono.
+- Kênh Nhạc / Hiệu ứng / Giao diện đi vào một limiter. Âm lượng chỉnh thêm trong màn Tạm dừng.
 - Mỗi âm có giới hạn số tiếng cùng lúc và khoảng cách tối thiểu; cao độ lệch nhẹ để tiếng lặp lại không đơ.
-- Nhạc đổi theo trạng thái:
-  - Màn hình đầu và lúc khám phá: lọc tối, nhỏ tiếng.
-  - Khi đánh: mở đủ dải.
-  - Trùm: chậm lại 5%.
-  - Khi kết thúc: tắt dần.
-  - Khi có fanfare hay nhặt Linh Tinh: nhạc tự nhỏ đi.
-- Chỉ tổng hợp 2 âm mà bộ Mixkit không có: tiếng bước chân và tiếng đập đất. Cả hai là sóng sine đã lọc, ngắn, không kéo dài.
+- Chỉ tổng hợp 2 âm bộ Mixkit không có: bước chân và đập đất, đều là sóng sine đã lọc, ngắn.
 
 | Sự kiện | File nguồn Mixkit |
 |---|---|
@@ -77,7 +73,6 @@ Tối ưu: `gltf-transform optimize mira_slash.glb mira-rigged.glb --texture-com
 | Linh hồn / Linh Tinh / Linh Tinh hiện ra / nâng cấp | winning-a-coin / video-game-treasure / unlock-new-item / winning-an-extra-bonus |
 | Tuyệt kỹ sẵn sàng / bắt đầu đợt / hết đợt | unlock-game-notification / medieval-show-fanfare / completion-of-a-level |
 | Thắng / thua / bấm nút / mở xưởng | game-level-completed / player-losing-or-failing / video-game-retro-click / quick-positive-notification |
-| Nhạc nền | game-level-music |
 
 ## Deploy GitHub Pages
 

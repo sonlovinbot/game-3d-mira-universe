@@ -35,7 +35,8 @@
 
     <section class="top-right">
       <div class="card score"><span>ĐIỂM</span><strong id="score">0</strong></div>
-      <button id="btn-sound" class="round" aria-label="Tắt âm thanh">♪</button>
+      <button class="round tg-music" type="button" aria-pressed="true" aria-label="Nhạc nền" title="Nhạc nền (M)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17V5l10-2v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.5" fill="currentColor"/><circle cx="16.5" cy="15.5" r="2.5" fill="currentColor"/></svg></button>
+      <button class="round tg-sfx" type="button" aria-pressed="true" aria-label="Hiệu ứng âm thanh" title="Hiệu ứng âm thanh (N)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="wave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
       <button id="btn-pause" class="round" aria-label="Tạm dừng">Ⅱ</button>
     </section>
 
@@ -87,6 +88,7 @@
         <button id="btn-start" class="primary" disabled>Bắt đầu <span>→</span></button>
         <button id="btn-studio" class="secondary" disabled>Xem chuyển động</button>
       </div>
+      <div class="audio-row"><button class="toggle tg-music" type="button" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17V5l10-2v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.5" fill="currentColor"/><circle cx="16.5" cy="15.5" r="2.5" fill="currentColor"/></svg><span>Nhạc nền</span></button><button class="toggle tg-sfx" type="button" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="wave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Hiệu ứng</span></button></div>
       <p id="best" class="best"></p>
     </div>
   </div>
@@ -110,6 +112,7 @@
       <input id="studio-speed" type="range" min="0.1" max="1.5" step="0.05" value="1" />
       <label class="check"><input id="studio-orbit" type="checkbox" /> Tự xoay quanh</label>
       <label class="check"><input id="studio-bones" type="checkbox" /> Hiện bộ xương</label>
+      <div class="audio-row"><button class="toggle tg-music" type="button" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17V5l10-2v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.5" fill="currentColor"/><circle cx="16.5" cy="15.5" r="2.5" fill="currentColor"/></svg><span>Nhạc nền</span></button><button class="toggle tg-sfx" type="button" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="wave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Hiệu ứng</span></button></div>
     </section>
     <p class="studio-hint">Kéo chuột hoặc vuốt để xoay, cuộn hoặc chụm 2 ngón để phóng to. Esc để thoát.</p>
   </aside>
